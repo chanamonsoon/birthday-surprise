@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "Birthday Surprise",
+  "schemaVersion": 1,
+  "description": "เว็บเซอร์ไพรส์วันเกิดสำหรับแฟน — ธีมโรแมนติก น่ารัก มีซองจดหมายเปิดอ่าน จดหมายรัก แกลเลอรี่รูป และเป่าเทียนอวยพร",
+  "mcpTools": [],
+  "mcpServerNames": []
+}
+</script>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#fff0f5">
+<title>Happy Birthday, My Love 💗</title>
+<style>
+  /* ============================================================
+     แก้ไขข้อความ/ชื่อทั้งหมดได้ที่ CONFIG object ในแท็ก <script>
+     ด้านล่างสุดของไฟล์นี้ (Ctrl+F หาคำว่า "const CONFIG")
+     ============================================================ */
+  :root{
+    --pink:#ff6f91;
+    --pink-deep:#ff477e;
+    --rose:#ff8fab;
+    --peach:#ffd6a8;
+    --light:#fff5f8;
+    --cream:#fffaf4;
+    --text:#4a3340;
+    --muted:#8a6b78;
+    --card:rgba(255,255,255,.82);
+    --shadow:0 18px 55px rgba(190,85,120,.18);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:"Kanit","Noto Sans Thai","Segoe UI",sans-serif;
+    color:var(--text);
+    background:
+      radial-gradient(circle at 10% 10%, rgba(255,173,196,.34), transparent 26%),
+      radial-gradient(circle at 90% 20%, rgba(255,213,156,.28), transparent 26%),
+      linear-gradient(145deg,#fff6f9 0%,#fffaf5 55%,#fdf1f8 100%);
+    overflow-x:hidden;
+    min-height:100vh;
+  }
+  button{font:inherit;}
+  .hidden{display:none!important;}
+  h1,h2,h3,p{margin-top:0;}
+  a{color:inherit;}
+
+  /* ---------- floating hearts background ---------- */
+  #hearts{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+  .bg-heart{
+    position:absolute; bottom:-10%; font-size:20px; opacity:.5;
+    animation: floatUp linear infinite; color:var(--rose); user-select:none;
+  }
+  @keyframes floatUp{
+    0%{ transform:translateY(0) translateX(0) rotate(0deg); opacity:0; }
+    10%{ opacity:.55; }
+    100%{ transform:translateY(-115vh) translateX(24px) rotate(20deg); opacity:0; }
+  }
+  .floating-heart{
+    position:fixed; bottom:-40px; pointer-events:none; z-index:99;
+    animation: rise linear forwards;
+  }
+  @keyframes rise{ to{ transform:translateY(-115vh) rotate(18deg); opacity:0; } }
+
+  /* ---------- nav ---------- */
+  nav{
+    position:fixed; z-index:20; top:16px; left:50%; transform:translateX(-50%);
+    width:min(920px,calc(100% - 28px));
+    background:rgba(255,255,255,.72); backdrop-filter:blur(14px);
+    border:1px solid rgba(255,255,255,.9); border-radius:999px;
+    padding:9px 12px; display:flex; align-items:center; justify-content:space-between;
+    box-shadow:0 10px 30px rgba(100,40,60,.10);
+  }
+  nav .brand{font-weight:800; padding-left:8px; white-space:nowrap;}
+  nav .links{display:flex; gap:2px; flex-wrap:wrap;}
+  nav a{ text-decoration:none; color:var(--text); padding:9px 12px; border-radius:999px; font-size:.86rem; }
+  nav a:hover{ background:#ffeaf1; }
+  @media (max-width:720px){ nav .links{ display:none; } }
+
+  section, header.hero{
+    position:relative; z-index:1; padding:96px 22px 60px;
+  }
+  .container{ width:min(1000px,100%); margin:0 auto; }
+  .section-head{ text-align:center; margin-bottom:32px; }
+  .eyebrow{
+    color:var(--pink); font-weight:700; letter-spacing:.08em;
+    text-transform:uppercase; font-size:.8rem;
+  }
+  .section-head p{ color:var(--muted); max-width:640px; margin:8px auto 0; line-height:1.7; }
+  h2{ font-size:clamp(1.6rem,4.5vw,2.6rem); }
+
+  .card{
+    background:var(--card); backdrop-filter:blur(16px);
+    border:1px solid rgba(255,255,255,.85); box-shadow:var(--shadow);
+    border-radius:28px;
+  }
+
+  /* ---------- hero ---------- */
+  .hero{ min-height:100vh; display:grid; place-items:center; text-align:center; }
+  .hero-card{ width:min(1000px,100%); padding:clamp(30px,6vw,70px); position:relative; overflow:hidden; }
+  .hero-card:before,.hero-card:after{
+    content:""; position:absolute; border-radius:50%; filter:blur(2px); opacity:.55;
+  }
+  .hero-card:before{ width:220px; height:220px; background:#ffd2df; right:-70px; top:-60px; }
+  .hero-card:after{ width:170px; height:170px; background:#ffe8bd; left:-60px; bottom:-70px; }
+  .hero-content{ position:relative; z-index:2; }
+  .sparkle{ font-size:1.3rem; margin-bottom:6px; }
+  h1{ font-size:clamp(2rem,6.5vw,4rem); line-height:1.12; color:var(--text); }
+  .hero p.lead{
+    max-width:680px; margin:16px auto 30px; font-size:clamp(1rem,2.3vw,1.2rem);
+    line-height:1.85; color:var(--muted);
+  }
+  .btn{
+    border:0; border-radius:999px; padding:13px 26px; cursor:pointer;
+    transition:.25s ease; font-weight:700; display:inline-block; text-decoration:none;
+  }
+  .btn-primary{ color:#fff; background:linear-gradient(135deg,var(--pink),var(--pink-deep)); box-shadow:0 10px 26px rgba(255,71,126,.27); }
+  .btn:hover{ transform:translateY(-2px); }
+
+  /* ---------- envelope (opens the letter section) ---------- */
+  .envelope-wrap{ margin-top:34px; }
+  .envelope{ width:220px; height:145px; position:relative; margin:0 auto; cursor:pointer; transition:transform .3s ease; }
+  .envelope:hover{ transform:scale(1.04); }
+  .envelope-body{ position:absolute; inset:0; background:var(--rose); border-radius:12px; box-shadow:0 18px 34px rgba(255,92,138,.32); }
+  .envelope-flap{
+    position:absolute; top:0; left:0; width:100%; height:0;
+    border-left:110px solid transparent; border-right:110px solid transparent;
+    border-top:76px solid var(--pink-deep); transform-origin:top;
+    transition:transform .6s cubic-bezier(.68,-.4,.27,1.4); z-index:3;
+  }
+  .envelope.open .envelope-flap{ transform:rotateX(180deg); }
+  .envelope-heart{ position:absolute; top:60%; left:50%; transform:translate(-50%,-50%); font-size:28px; z-index:4; color:#fff; animation:pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse{ 0%,100%{ transform:translate(-50%,-50%) scale(1); } 50%{ transform:translate(-50%,-50%) scale(1.15); } }
+  .env-hint{ margin-top:16px; font-size:13px; color:var(--muted); }
+  .env-hint span{ display:inline-block; animation:bob 1.4s ease-in-out infinite; }
+  @keyframes bob{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(6px); } }
+
+  /* ---------- story timeline ---------- */
+  .section-card{ padding:clamp(24px,5vw,52px); }
+  .timeline{ position:relative; display:grid; gap:22px; }
+  .timeline:before{
+    content:""; position:absolute; left:21px; top:10px; bottom:10px; width:3px;
+    background:linear-gradient(var(--pink),#ffc1d1,var(--peach)); border-radius:4px;
+  }
+  .moment{ display:grid; grid-template-columns:46px 1fr; gap:18px; align-items:start; }
+  .dot{
+    width:46px; height:46px; border-radius:50%; display:grid; place-items:center;
+    background:#fff; border:2px solid #ffc3d4; position:relative; z-index:2;
+    box-shadow:0 8px 20px rgba(255,111,145,.18); font-size:1.1rem;
+  }
+  .moment-content{ background:#fff; border-radius:20px; padding:18px 20px; box-shadow:0 10px 28px rgba(105,53,73,.08); }
+  .moment-content h3{ margin-bottom:6px; font-size:1.05rem; }
+  .moment-content p{ margin:0; color:var(--muted); line-height:1.65; }
+
+  /* ---------- gallery ---------- */
+  .gallery{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  .photo{
+    min-height:230px; border-radius:22px; padding:18px; display:flex; align-items:flex-end;
+    position:relative; overflow:hidden; color:#fff; box-shadow:0 14px 30px rgba(72,43,57,.12);
+    background-size:cover; background-position:center; cursor:pointer;
+    transition:transform .25s ease, box-shadow .25s ease;
+  }
+  .photo:hover{ transform:translateY(-3px) scale(1.015); box-shadow:0 18px 36px rgba(72,43,57,.2); }
+  .photo:before{ content:""; position:absolute; inset:0; background:linear-gradient(transparent 35%,rgba(36,18,28,.72)); }
+  .photo span{ position:relative; z-index:2; font-weight:700; }
+  .photo.one{ background:linear-gradient(145deg,#ffb4c8,#ff779b); }
+  .photo.two{ background:linear-gradient(145deg,#ffd9a8,#ef9d75); }
+  .photo.three{ background:linear-gradient(145deg,#ccb6ff,#8f7fd8); }
+  .photo.has-photo:after{
+    content:"✏️ เปลี่ยนรูป"; position:absolute; top:10px; right:10px; z-index:3;
+    background:rgba(255,255,255,.88); color:var(--pink-deep); font-size:.72rem; font-weight:700;
+    padding:5px 10px; border-radius:999px; opacity:0; transition:opacity .2s ease;
+  }
+  .photo.has-photo:hover:after{ opacity:1; }
+  @media (max-width:720px){ .gallery{ grid-template-columns:1fr; } }
+  .gallery-note{ text-align:center; color:var(--muted); font-size:.85rem; margin-top:14px; }
+  .download-wrap{ text-align:center; margin-top:26px; }
+  .download-note{ color:var(--muted); font-size:.8rem; margin-top:10px; }
+
+  /* ---------- letter ---------- */
+  #letterSection{ display:none; }
+  #letterSection.show{ display:block; }
+  .letter{
+    font-family:"Georgia","Noto Serif Thai",serif; background:#fffdf9;
+    border:1px solid #f3dfcf; border-radius:24px; padding:clamp(24px,5vw,50px);
+    line-height:2; font-size:1.05rem; position:relative; white-space:pre-line;
+  }
+  .letter:before{ content:"\201C"; position:absolute; top:-18px; left:20px; font-size:80px; color:#ffd1df; line-height:1; }
+  .signature{ margin-top:22px; text-align:right; font-style:italic; color:var(--pink-deep); }
+
+  /* ---------- cake / candle ---------- */
+  .surprise-block{ text-align:center; }
+  .cake-wrap{ display:flex; flex-direction:column; align-items:center; margin-top:20px; }
+  .cake{ position:relative; width:170px; }
+  .plate{ width:210px; height:14px; background:var(--rose); border-radius:50%; margin:0 -20px; box-shadow:0 10px 18px rgba(255,92,138,.3); }
+  .tier{ background:linear-gradient(180deg,#fff,#ffe9ef); border:2px solid var(--rose); border-radius:8px; position:relative; }
+  .tier.bottom{ height:56px; width:170px; }
+  .tier.top{ height:42px; width:122px; margin:0 auto; margin-top:-4px; }
+  .tier:after{
+    content:""; position:absolute; left:0; right:0; top:0; height:9px;
+    background:repeating-linear-gradient(90deg,var(--rose) 0 10px,transparent 10px 20px);
+    border-top-left-radius:8px; border-top-right-radius:8px;
+  }
+  .candle{ width:7px; height:30px; background:var(--peach); margin:0 auto; border-radius:3px; position:relative; margin-top:-2px; }
+  .flame{
+    width:11px; height:16px; background:radial-gradient(circle at 50% 70%,#fff4c1,var(--peach) 60%,#ff8a3d);
+    border-radius:50% 50% 50% 50% / 60% 60% 40% 40%; position:absolute; top:-14px; left:50%;
+    transform:translateX(-50%); animation:flicker 1s ease-in-out infinite; transform-origin:bottom center;
+    box-shadow:0 0 12px rgba(255,180,60,.8);
+  }
+  @keyframes flicker{ 0%,100%{ transform:translateX(-50%) scale(1) rotate(-2deg); } 50%{ transform:translateX(-50%) scale(1.1) rotate(3deg); } }
+  .flame.out{ display:none; }
+  .wish-msg{ margin-top:18px; font-size:1rem; color:var(--pink-deep); font-weight:600; opacity:0; transition:opacity .5s ease; min-height:24px; }
+  .wish-msg.show{ opacity:1; }
+
+  /* ---------- gift box ---------- */
+  #gift{
+    font-size:80px; cursor:pointer; display:inline-block;
+    filter:drop-shadow(0 16px 22px rgba(255,71,126,.22));
+    animation:float 2.8s ease-in-out infinite; user-select:none;
+  }
+  @keyframes float{ 50%{ transform:translateY(-10px) rotate(2deg); } }
+  #surpriseMessage{ margin-top:18px; font-size:clamp(1.3rem,4.5vw,2rem); font-weight:800; color:var(--pink-deep); }
+
+  footer{ position:relative; z-index:1; text-align:center; padding:30px 20px 70px; color:var(--muted); }
+
+  .music{
+    position:fixed; right:18px; bottom:18px; z-index:30; width:48px; height:48px; border-radius:50%;
+    border:0; background:#fff; box-shadow:0 10px 28px rgba(100,40,60,.18); cursor:pointer; font-size:1.15rem;
+  }
+
+  /* ---------- password lock screen ---------- */
+  .screen{ min-height:100vh; display:grid; place-items:center; padding:24px; position:relative; z-index:2; }
+  .lock-card{ width:min(480px,100%); padding:42px 30px; text-align:center; animation:fadeUp .8s ease both; }
+  @keyframes fadeUp{ from{ opacity:0; transform:translateY(22px); } to{ opacity:1; transform:none; } }
+  .lock-heart{ font-size:64px; filter:drop-shadow(0 10px 18px rgba(255,111,145,.28)); animation:pulse 1.8s infinite; }
+  .lock-card h2{ font-size:clamp(1.5rem,4.5vw,2rem); margin:10px 0 6px; }
+  .lock-card p.lock-sub{ color:var(--muted); line-height:1.7; }
+  .input-wrap{ display:flex; gap:10px; margin-top:22px; }
+  .input-wrap input{
+    flex:1; border:1px solid #f4c5d3; border-radius:16px; padding:14px 16px;
+    outline:none; background:#fff; color:var(--text); font-size:1rem;
+  }
+  .input-wrap input:focus{ border-color:var(--pink); box-shadow:0 0 0 4px rgba(255,111,145,.12); }
+  .lock-hint{ color:var(--muted); font-size:.85rem; margin-top:12px; }
+  .lock-error{ color:#d83f68; min-height:22px; margin-top:8px; font-size:.9rem; }
+  #site{ opacity:0; transition:opacity .8s ease; }
+  #site.visible{ opacity:1; }
+  @media (max-width:520px){ .input-wrap{ flex-direction:column; } .input-wrap .btn{ width:100%; } }
+</style>
+</head>
+<body>
+
+<div id="hearts"></div>
+
+<!-- PASSWORD LOCK -->
+<div id="lock" class="screen">
+  <div class="lock-card card">
+    <div class="lock-heart">💗</div>
+    <div class="eyebrow">A little surprise for you</div>
+    <h2>มีบางอย่างรอเธออยู่</h2>
+    <p class="lock-sub">ใส่รหัสลับของเราสองคน เพื่อเปิดของขวัญชิ้นนี้</p>
+    <div class="input-wrap">
+      <input id="password" type="password" placeholder="รหัสลับ..." autocomplete="off">
+      <button class="btn btn-primary" id="unlockBtn">เปิดเซอร์ไพรส์</button>
+    </div>
+    <div class="lock-hint" id="lockHint">คำใบ้: วันสำคัญของเรา</div>
+    <div class="lock-error" id="lockError"></div>
+  </div>
+</div>
+
+<div id="site" class="hidden">
+
+<nav>
+  <div class="brand">💞 <span id="navName">Our Story</span></div>
+  <div class="links">
+    <a href="#story">เรื่องของเรา</a>
+    <a href="#memories">ความทรงจำ</a>
+    <a href="#letterSection">จดหมาย</a>
+    <a href="#wish">ขอพร</a>
+    <a href="#surprise">ของขวัญ</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero" id="top">
+  <div class="hero-card card">
+    <div class="hero-content">
+      <div class="sparkle">✨ 💗 ✨</div>
+      <div class="eyebrow">Happy Birthday</div>
+      <h1 id="heroTitle">สุขสันต์วันเกิดนะ<br><span id="heroName">[ชื่อแฟน]</span></h1>
+      <p class="lead" id="heroText">ขอบคุณที่เข้ามาเป็นทั้งรอยยิ้ม ความสบายใจ และความทรงจำที่ดีที่สุดในทุกวัน</p>
+      <a class="btn btn-primary" href="#story">เปิดดูเรื่องราวของเรา</a>
+
+      <div class="envelope-wrap">
+        <div class="envelope" id="envelope">
+          <div class="envelope-body"></div>
+          <div class="envelope-flap"></div>
+          <div class="envelope-heart">💗</div>
+        </div>
+        <p class="env-hint"><span>👆 กดที่ซองเพื่ออ่านจดหมายรัก</span></p>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- STORY TIMELINE -->
+<section id="story">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">Our Story</div>
+      <h2>ทุกช่วงเวลาที่มีเธอ</h2>
+      <p>บางความทรงจำอาจดูเป็นเรื่องเล็กๆ แต่เมื่อเป็นเรื่องของเรา ทุกช่วงเวลากลับมีความหมายเสมอ</p>
+    </div>
+    <div class="section-card card">
+      <div class="timeline" id="timeline">
+        <!-- filled by CONFIG.timeline -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="memories">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">Favorite Memories</div>
+      <h2>ภาพที่อยู่ในใจเสมอ</h2>
+    </div>
+    <div class="gallery">
+      <label class="photo one" for="photoInput1">
+        <span>วันแรกๆ ของเรา 💕</span>
+        <input type="file" accept="image/*" id="photoInput1" class="photo-input" hidden>
+      </label>
+      <label class="photo two" for="photoInput2">
+        <span>การเดินทางที่ชอบที่สุด ✈️</span>
+        <input type="file" accept="image/*" id="photoInput2" class="photo-input" hidden>
+      </label>
+      <label class="photo three" for="photoInput3">
+        <span>รอยยิ้มที่อยากเห็นทุกวัน 😊</span>
+        <input type="file" accept="image/*" id="photoInput3" class="photo-input" hidden>
+      </label>
+    </div>
+    <p class="gallery-note">📷 คลิกที่รูปเพื่ออัปโหลดจากคอม (รองรับ .jpg .png .gif ฯลฯ)</p>
+    <div class="download-wrap">
+      <button class="btn btn-primary" id="downloadBtn">💾 ดาวน์โหลดเว็บฉบับสมบูรณ์ (พร้อมรูปที่ใส่)</button>
+      <p class="download-note">กดปุ่มนี้หลังใส่รูปครบแล้ว เพื่อบันทึกเป็นไฟล์ใหม่ที่มีรูปติดอยู่ถาวร ก่อนส่งให้แฟนดู</p>
+    </div>
+  </div>
+</section>
+
+<!-- LETTER (revealed after clicking envelope) -->
+<section id="letterSection">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">A Letter For You</div>
+      <h2>ถึงคนที่ฉันรัก</h2>
+    </div>
+    <div class="letter" id="letterText"></div>
+    <div class="signature" id="letterSignature"></div>
+  </div>
+</section>
+
+<!-- CANDLE WISH -->
+<section id="wish">
+  <div class="container surprise-block">
+    <div class="section-card card">
+      <div class="eyebrow">Make A Wish</div>
+      <h2>🎂 ขอพรวันเกิด</h2>
+      <p style="color:var(--muted)">หลับตา อธิษฐาน แล้วกดเป่าเทียนกันนะ 🕯️</p>
+      <div class="cake-wrap">
+        <div class="cake">
+          <div class="candle" id="candle"><div class="flame" id="flame"></div></div>
+          <div class="tier top"></div>
+          <div class="tier bottom"></div>
+        </div>
+        <div class="plate"></div>
+        <button class="btn btn-primary" id="blowBtn" style="margin-top:28px;">🕯️ เป่าเทียน</button>
+        <div class="wish-msg" id="wishMsg">ขอให้คำอธิษฐานเป็นจริงนะ 🌟</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GIFT BOX -->
+<section id="surprise">
+  <div class="container surprise-block">
+    <div class="section-card card">
+      <div class="eyebrow">One More Thing</div>
+      <h2>ยังมีของขวัญอีกชิ้น</h2>
+      <p style="color:var(--muted)">แตะที่กล่องของขวัญ</p>
+      <div id="gift">🎁</div>
+      <div id="surpriseMessage" class="hidden"></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Made with love, especially for <span id="footerName">you</span> 💗
+</footer>
+<button class="music" id="musicBtn" title="เปิด/ปิดเสียง">♫</button>
+
+</div><!-- /#site -->
+
+<script>
+  /* ============================================================
+     ✏️ แก้ไขทุกข้อความ/ชื่อของเว็บนี้ได้ตรงนี้ที่เดียว
+     ============================================================ */
+  const CONFIG = {
+    partnerName: "[ชื่อแฟน]",
+    yourName: "[ชื่อคุณ]",
+    password: "1234",              // 🔑 ตั้งรหัสผ่านลับของเว็บนี้ตรงนี้ (ตัวพิมพ์เล็ก/ใหญ่มีผล)
+    passwordHint: "คำใบ้: วันสำคัญของเรา", // คำใบ้ที่โชว์ให้แฟนดู
+    heroMessage: "ขอบคุณที่เข้ามาเป็นทั้งรอยยิ้ม ความสบายใจ และความทรงจำที่ดีที่สุดในทุกวัน",
+    timeline: [
+      { icon:"🌱", title:"วันที่เราได้รู้จักกัน", text:"จากวันธรรมดาวันหนึ่ง กลายเป็นจุดเริ่มต้นของเรื่องราวที่พิเศษที่สุด" },
+      { icon:"☕", title:"ช่วงเวลาธรรมดาที่น่าจดจำ", text:"บทสนทนา มื้ออาหาร การเดินทาง และเสียงหัวเราะที่ทำให้วันธรรมดาดีขึ้นเสมอ" },
+      { icon:"💫", title:"วันนี้และวันต่อๆ ไป", text:"ขอให้เราได้สร้างความทรงจำดีๆ เพิ่มขึ้นอีกมากมาย และอยู่ข้างกันในทุกช่วงชีวิต" }
+    ],
+    letter: `สุขสันต์วันเกิดนะ 🎂
+
+ขอบคุณที่เข้ามาอยู่ในชีวิต และทำให้หลายวันที่แสนธรรมดากลายเป็นวันที่มีความหมาย
+ขอบคุณสำหรับความเข้าใจ ความห่วงใย รอยยิ้ม และทุกช่วงเวลาที่เราได้แบ่งปันกัน
+
+ในวันเกิดปีนี้ ขอให้เธอมีความสุขมากๆ ได้ทำสิ่งที่รัก ได้อยู่กับคนที่รัก
+และเจอแต่เรื่องดีๆ ที่คู่ควรกับหัวใจของเธอ
+
+ไม่ว่าวันข้างหน้าจะเป็นอย่างไร ขอให้รู้ไว้ว่ายังมีคนคนหนึ่งที่ภูมิใจในตัวเธอ
+และดีใจเสมอที่ได้มีเธออยู่ในชีวิต
+
+รักเธอมากที่สุด 💗`,
+    surpriseMessage: "ขอให้ปีนี้เป็นปีที่ดีที่สุดของเธอ<br>และมีเราอยู่ข้างๆ กัน 💞"
+  };
+
+  document.getElementById("lockHint").textContent = CONFIG.passwordHint;
+
+  document.getElementById("heroName").textContent = CONFIG.partnerName;
+  document.getElementById("heroText").textContent = CONFIG.heroMessage;
+  document.getElementById("navName").textContent = CONFIG.partnerName;
+  document.getElementById("footerName").textContent = CONFIG.partnerName;
+  document.getElementById("surpriseMessage").innerHTML = CONFIG.surpriseMessage;
+  document.getElementById("letterText").textContent = CONFIG.letter;
+  document.getElementById("letterSignature").textContent = "— " + CONFIG.yourName + " 🤍";
+
+  const timelineEl = document.getElementById("timeline");
+  timelineEl.innerHTML = ""; // clear first so re-opening a downloaded/exported copy never duplicates entries
+  CONFIG.timeline.forEach(m => {
+    const div = document.createElement("div");
+    div.className = "moment";
+    div.innerHTML = `<div class="dot">${m.icon}</div><div class="moment-content"><h3>${m.title}</h3><p>${m.text}</p></div>`;
+    timelineEl.appendChild(div);
+  });
+
+  /* floating background hearts */
+  const heartsContainer = document.getElementById('hearts');
+  heartsContainer.innerHTML = ""; // clear first so re-opening a downloaded/exported copy never doubles up
+  const heartEmojis = ['💗','💕','💖','💓','🩷'];
+  for(let i=0;i<22;i++){
+    const h = document.createElement('div');
+    h.className='bg-heart';
+    h.textContent = heartEmojis[Math.floor(Math.random()*heartEmojis.length)];
+    h.style.left = Math.random()*100+'vw';
+    h.style.fontSize = (14+Math.random()*18)+'px';
+    h.style.animationDuration = (8+Math.random()*10)+'s';
+    h.style.animationDelay = (Math.random()*10)+'s';
+    heartsContainer.appendChild(h);
+  }
+
+  /* photo upload from computer */
+  document.querySelectorAll('.photo-input').forEach(input => {
+    input.addEventListener('change', e => {
+      const file = e.target.files[0];
+      if(!file) return;
+      const photo = input.closest('.photo');
+      const reader = new FileReader();
+      reader.onload = ev => {
+        photo.style.backgroundImage = `url(${ev.target.result})`;
+        photo.classList.add('has-photo');
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+
+  /* download a clean, finished copy (with uploaded photos baked in) ready to send via LINE and open on mobile */
+  const downloadBtnEl = document.getElementById('downloadBtn');
+  if(downloadBtnEl){
+    downloadBtnEl.addEventListener('click', () => {
+      const clone = document.documentElement.cloneNode(true);
+      const $ = sel => clone.querySelector(sel);
+
+      // reset interactive states so the recipient gets a fresh surprise
+      const lockEl = $('#lock'); if(lockEl) lockEl.classList.remove('hidden');
+      const siteEl = $('#site'); if(siteEl){ siteEl.classList.add('hidden'); siteEl.classList.remove('visible'); }
+      const letterEl = $('#letterSection'); if(letterEl) letterEl.classList.remove('show');
+      const envEl = $('#envelope'); if(envEl) envEl.classList.remove('open');
+      const flameEl = $('#flame'); if(flameEl) flameEl.classList.remove('out');
+      const wishEl = $('#wishMsg'); if(wishEl) wishEl.classList.remove('show');
+      const surpriseEl = $('#surpriseMessage'); if(surpriseEl) surpriseEl.classList.add('hidden');
+      const giftEl = $('#gift'); if(giftEl) giftEl.textContent = '🎁';
+      const pwInput = $('#password'); if(pwInput) pwInput.removeAttribute('value');
+      const lockErr = $('#lockError'); if(lockErr) lockErr.textContent = '';
+
+      // carry over any uploaded photos
+      const liveExamples = document.querySelectorAll('.photo');
+      clone.querySelectorAll('.photo').forEach((p, i) => {
+        const live = liveExamples[i];
+        if(live && live.style.backgroundImage){ p.style.backgroundImage = live.style.backgroundImage; }
+      });
+
+      // strip every creator-only helper: instructions, upload hints, and the download button itself,
+      // so the file the recipient opens on their phone is the finished gift only
+      clone.querySelectorAll('.gallery-note, .download-wrap').forEach(el => el.remove());
+      clone.querySelectorAll('label.photo').forEach(label => {
+        const div = document.createElement('div');
+        div.className = label.className.replace(/\bhas-photo\b/g, '').trim();
+        div.setAttribute('style', label.getAttribute('style') || '');
+        div.style.cursor = 'default';
+        const span = label.querySelector('span');
+        if(span) div.appendChild(span.cloneNode(true));
+        label.replaceWith(div);
+      });
+
+      const html = '<!DOCTYPE html>\n' + clone.outerHTML;
+      const blob = new Blob([html], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'birthday_surprise_final.html';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+  }
+
+  /* password lock */
+  const passwordInput = document.getElementById("password");
+  const lockError = document.getElementById("lockError");
+  function unlock(){
+    const value = passwordInput.value.trim();
+    if(value.toLowerCase() === CONFIG.password.toLowerCase()){
+      document.getElementById("lock").classList.add("hidden");
+      const site = document.getElementById("site");
+      site.classList.remove("hidden");
+      setTimeout(() => site.classList.add("visible"), 30);
+      burst(18);
+    }else{
+      lockError.textContent = "รหัสยังไม่ถูกนะ ลองนึกถึงวันสำคัญของเราอีกครั้ง 💭";
+      passwordInput.animate(
+        [{transform:"translateX(0)"},{transform:"translateX(-7px)"},{transform:"translateX(7px)"},{transform:"translateX(0)"}],
+        {duration:320}
+      );
+    }
+  }
+  document.getElementById("unlockBtn").addEventListener("click", unlock);
+  passwordInput.addEventListener("keydown", e => { if(e.key === "Enter") unlock(); });
+
+  function burst(count){
+    for(let i=0;i<count;i++){ setTimeout(createHeart, i*55); }
+  }
+  function createHeart(){
+    const el = document.createElement("div");
+    el.className = "floating-heart";
+    el.textContent = ["💗","💕","💖","✨","🌸"][Math.floor(Math.random()*5)];
+    el.style.left = Math.random()*100+"vw";
+    el.style.fontSize = (16+Math.random()*22)+"px";
+    el.style.animationDuration = (3.5+Math.random()*3)+"s";
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),7000);
+  }
+
+  /* envelope -> reveal letter */
+  const envelope = document.getElementById('envelope');
+  const letterSection = document.getElementById('letterSection');
+  envelope.addEventListener('click', () => {
+    envelope.classList.add('open');
+    setTimeout(()=>{
+      letterSection.classList.add('show');
+      letterSection.scrollIntoView({behavior:'smooth', block:'start'});
+      burst(20);
+    }, 500);
+  });
+
+  /* candle blow */
+  const blowBtn = document.getElementById('blowBtn');
+  const flame = document.getElementById('flame');
+  const wishMsg = document.getElementById('wishMsg');
+  blowBtn.addEventListener('click', () => {
+    flame.classList.add('out');
+    wishMsg.classList.add('show');
+    burst(25);
+  });
+
+  /* gift box */
+  const gift = document.getElementById('gift');
+  gift.addEventListener('click', () => {
+    document.getElementById('surpriseMessage').classList.remove('hidden');
+    gift.textContent = '💝';
+    burst(35);
+  });
+
+  /* gentle ambient tone toggle (no external audio file needed) */
+  let audioCtx, oscillator, gainNode, playing=false;
+  document.getElementById('musicBtn').addEventListener('click', function(){
+    const btn = this;
+    if(!playing){
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      oscillator = audioCtx.createOscillator();
+      gainNode = audioCtx.createGain();
+      oscillator.type = "sine";
+      oscillator.frequency.value = 432;
+      gainNode.gain.value = 0.025;
+      oscillator.connect(gainNode).connect(audioCtx.destination);
+      oscillator.start();
+      playing = true;
+      btn.textContent = "❚❚";
+    }else{
+      oscillator.stop();
+      audioCtx.close();
+      playing = false;
+      btn.textContent = "♫";
+    }
+  });
+</script>
+
+</body>
+</html>
