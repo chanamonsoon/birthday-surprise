@@ -156,31 +156,6 @@
   .moment-content h3{ margin-bottom:6px; font-size:1.05rem; }
   .moment-content p{ margin:0; color:var(--muted); line-height:1.65; }
 
-  /* ---------- gallery ---------- */
-  .gallery{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
-  .photo{
-    min-height:230px; border-radius:22px; padding:18px; display:flex; align-items:flex-end;
-    position:relative; overflow:hidden; color:#fff; box-shadow:0 14px 30px rgba(72,43,57,.12);
-    background-size:cover; background-position:center; cursor:pointer;
-    transition:transform .25s ease, box-shadow .25s ease;
-  }
-  .photo:hover{ transform:translateY(-3px) scale(1.015); box-shadow:0 18px 36px rgba(72,43,57,.2); }
-  .photo:before{ content:""; position:absolute; inset:0; background:linear-gradient(transparent 35%,rgba(36,18,28,.72)); }
-  .photo span{ position:relative; z-index:2; font-weight:700; }
-  .photo.one{ background:linear-gradient(145deg,#ffb4c8,#ff779b); }
-  .photo.two{ background:linear-gradient(145deg,#ffd9a8,#ef9d75); }
-  .photo.three{ background:linear-gradient(145deg,#ccb6ff,#8f7fd8); }
-  .photo.has-photo:after{
-    content:"✏️ เปลี่ยนรูป"; position:absolute; top:10px; right:10px; z-index:3;
-    background:rgba(255,255,255,.88); color:var(--pink-deep); font-size:.72rem; font-weight:700;
-    padding:5px 10px; border-radius:999px; opacity:0; transition:opacity .2s ease;
-  }
-  .photo.has-photo:hover:after{ opacity:1; }
-  @media (max-width:720px){ .gallery{ grid-template-columns:1fr; } }
-  .gallery-note{ text-align:center; color:var(--muted); font-size:.85rem; margin-top:14px; }
-  .download-wrap{ text-align:center; margin-top:26px; }
-  .download-note{ color:var(--muted); font-size:.8rem; margin-top:10px; }
-
   /* ---------- letter ---------- */
   #letterSection{ display:none; }
   #letterSection.show{ display:block; }
@@ -279,7 +254,6 @@
   <div class="brand">💞 <span id="navName">Our Story</span></div>
   <div class="links">
     <a href="#story">เรื่องของเรา</a>
-    <a href="#memories">ความทรงจำ</a>
     <a href="#letterSection">จดหมาย</a>
     <a href="#wish">ขอพร</a>
     <a href="#surprise">ของขวัญ</a>
@@ -320,35 +294,6 @@
       <div class="timeline" id="timeline">
         <!-- filled by CONFIG.timeline -->
       </div>
-    </div>
-  </div>
-</section>
-
-<!-- GALLERY -->
-<section id="memories">
-  <div class="container">
-    <div class="section-head">
-      <div class="eyebrow">Favorite Memories</div>
-      <h2>ภาพที่อยู่ในใจเสมอ</h2>
-    </div>
-    <div class="gallery">
-      <label class="photo one" for="photoInput1">
-        <span>วันแรกๆ ของเรา 💕</span>
-        <input type="file" accept="image/*" id="photoInput1" class="photo-input" hidden>
-      </label>
-      <label class="photo two" for="photoInput2">
-        <span>การเดินทางที่ชอบที่สุด ✈️</span>
-        <input type="file" accept="image/*" id="photoInput2" class="photo-input" hidden>
-      </label>
-      <label class="photo three" for="photoInput3">
-        <span>รอยยิ้มที่อยากเห็นทุกวัน 😊</span>
-        <input type="file" accept="image/*" id="photoInput3" class="photo-input" hidden>
-      </label>
-    </div>
-    <p class="gallery-note">📷 คลิกที่รูปเพื่ออัปโหลดจากคอม (รองรับ .jpg .png .gif ฯลฯ)</p>
-    <div class="download-wrap">
-      <button class="btn btn-primary" id="downloadBtn">💾 ดาวน์โหลดเว็บฉบับสมบูรณ์ (พร้อมรูปที่ใส่)</button>
-      <p class="download-note">กดปุ่มนี้หลังใส่รูปครบแล้ว เพื่อบันทึกเป็นไฟล์ใหม่ที่มีรูปติดอยู่ถาวร ก่อนส่งให้แฟนดู</p>
     </div>
   </div>
 </section>
@@ -411,9 +356,9 @@
      ✏️ แก้ไขทุกข้อความ/ชื่อของเว็บนี้ได้ตรงนี้ที่เดียว
      ============================================================ */
   const CONFIG = {
-    partnerName: "[ชื่อแฟน]",
-    yourName: "[ชื่อคุณ]",
-    password: "1234",              // 🔑 ตั้งรหัสผ่านลับของเว็บนี้ตรงนี้ (ตัวพิมพ์เล็ก/ใหญ่มีผล)
+    partnerName: "มีมี๊",
+    yourName: "ดีดี๊",
+    password: "09122021",          // 🔑 ตั้งรหัสผ่านลับของเว็บนี้ตรงนี้ (ตัวพิมพ์เล็ก/ใหญ่มีผล)
     passwordHint: "คำใบ้: วันสำคัญของเรา", // คำใบ้ที่โชว์ให้แฟนดู
     heroMessage: "ขอบคุณที่เข้ามาเป็นทั้งรอยยิ้ม ความสบายใจ และความทรงจำที่ดีที่สุดในทุกวัน",
     timeline: [
@@ -468,73 +413,6 @@
     h.style.animationDuration = (8+Math.random()*10)+'s';
     h.style.animationDelay = (Math.random()*10)+'s';
     heartsContainer.appendChild(h);
-  }
-
-  /* photo upload from computer */
-  document.querySelectorAll('.photo-input').forEach(input => {
-    input.addEventListener('change', e => {
-      const file = e.target.files[0];
-      if(!file) return;
-      const photo = input.closest('.photo');
-      const reader = new FileReader();
-      reader.onload = ev => {
-        photo.style.backgroundImage = `url(${ev.target.result})`;
-        photo.classList.add('has-photo');
-      };
-      reader.readAsDataURL(file);
-    });
-  });
-
-  /* download a clean, finished copy (with uploaded photos baked in) ready to send via LINE and open on mobile */
-  const downloadBtnEl = document.getElementById('downloadBtn');
-  if(downloadBtnEl){
-    downloadBtnEl.addEventListener('click', () => {
-      const clone = document.documentElement.cloneNode(true);
-      const $ = sel => clone.querySelector(sel);
-
-      // reset interactive states so the recipient gets a fresh surprise
-      const lockEl = $('#lock'); if(lockEl) lockEl.classList.remove('hidden');
-      const siteEl = $('#site'); if(siteEl){ siteEl.classList.add('hidden'); siteEl.classList.remove('visible'); }
-      const letterEl = $('#letterSection'); if(letterEl) letterEl.classList.remove('show');
-      const envEl = $('#envelope'); if(envEl) envEl.classList.remove('open');
-      const flameEl = $('#flame'); if(flameEl) flameEl.classList.remove('out');
-      const wishEl = $('#wishMsg'); if(wishEl) wishEl.classList.remove('show');
-      const surpriseEl = $('#surpriseMessage'); if(surpriseEl) surpriseEl.classList.add('hidden');
-      const giftEl = $('#gift'); if(giftEl) giftEl.textContent = '🎁';
-      const pwInput = $('#password'); if(pwInput) pwInput.removeAttribute('value');
-      const lockErr = $('#lockError'); if(lockErr) lockErr.textContent = '';
-
-      // carry over any uploaded photos
-      const liveExamples = document.querySelectorAll('.photo');
-      clone.querySelectorAll('.photo').forEach((p, i) => {
-        const live = liveExamples[i];
-        if(live && live.style.backgroundImage){ p.style.backgroundImage = live.style.backgroundImage; }
-      });
-
-      // strip every creator-only helper: instructions, upload hints, and the download button itself,
-      // so the file the recipient opens on their phone is the finished gift only
-      clone.querySelectorAll('.gallery-note, .download-wrap').forEach(el => el.remove());
-      clone.querySelectorAll('label.photo').forEach(label => {
-        const div = document.createElement('div');
-        div.className = label.className.replace(/\bhas-photo\b/g, '').trim();
-        div.setAttribute('style', label.getAttribute('style') || '');
-        div.style.cursor = 'default';
-        const span = label.querySelector('span');
-        if(span) div.appendChild(span.cloneNode(true));
-        label.replaceWith(div);
-      });
-
-      const html = '<!DOCTYPE html>\n' + clone.outerHTML;
-      const blob = new Blob([html], { type: 'text/html' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'birthday_surprise_final.html';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-    });
   }
 
   /* password lock */
